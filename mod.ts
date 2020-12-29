@@ -4,7 +4,7 @@ interface IResults {
   image: string
 }
 
-let ingredient = prompt("What ingredient are you looking up?")
+const ingredient = prompt("What ingredient are you looking up?")
 if (!ingredient) {
   console.error("Please enter an ingredient")
   Deno.exit(1)
@@ -12,22 +12,16 @@ if (!ingredient) {
 
 const KEY = Deno.env.get("SPOON_API")
 
-const ingreSearch = `https://api.spoonacular.com/food/ingredients/search?query=${encodeURIComponent(ingredient)}&apiKey=${KEY}&number=100`
-
-const ingreInfo = `https://api.spoonacular.com/food/ingredients/${id}/information?&apiKey=${KEY}`
+const ingreSearch = `https://api.spoonacular.com/food/ingredients/search?query=${encodeURIComponent(ingredient)}&apiKey=${KEY}&number=1`
 
 const resp = await fetch(ingreSearch)
 const data = await resp.json()
 
-if (data.totalResults > 1) {
-  data.results.map((el: IResults) => console.log(el.name))
-  ingredient = prompt("Multiple results, please enter one...")
-}
+const ingreID = data.results[0].id
 
-if (data.totalResults === 1) {
-  const res = await fetch(ingreInfo)
-}
+const ingreInfo = `https://api.spoonacular.com/food/ingredients/${ingreID}/information?amount=1&apiKey=${KEY}`
 
+const respInfo = await fetch(ingreInfo)
+const dataInfo = await respInfo.json()
 
-  
-
+console.log(dataInfo)
